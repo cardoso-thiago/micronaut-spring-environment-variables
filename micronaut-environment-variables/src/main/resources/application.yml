@@ -1,0 +1,6 @@
+micronaut:
+  application:
+    name: micronautEnvironmentVariables
+property:
+  user: ${system.user}
+  password: ${system.password}

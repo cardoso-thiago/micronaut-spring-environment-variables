@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-env
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-env
+  template:
+    metadata:
+      labels:
+        app: spring-env
+    spec:
+      containers:
+        - name: spring-env
+          image: spring-env
+          env:
+            - name: system.user
+              valueFrom:
+                secretKeyRef:
+                  name: secret-env
+                  key: username
+            - name: system.password
+              valueFrom:
+                secretKeyRef:
+                  name: secret-env
+                  key: password
+          imagePullPolicy: Never
+          ports:
+          - containerPort: 8081
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-env
+spec:
+  type: LoadBalancer
+  selector:
+    app: spring-env
+  ports:
+  - name: spring-env
+    port: 8081 
+ 

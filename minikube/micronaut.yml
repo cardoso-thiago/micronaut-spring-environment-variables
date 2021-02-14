@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: micronaut-env
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: micronaut-env
+  template:
+    metadata:
+      labels:
+        app: micronaut-env
+    spec:
+      containers:
+        - name: micronaut-env
+          image: micronaut-env
+          env:
+            - name: system.user
+              valueFrom:
+                secretKeyRef:
+                  name: secret-env
+                  key: username
+            - name: system.password
+              valueFrom:
+                secretKeyRef:
+                  name: secret-env
+                  key: password
+          imagePullPolicy: Never
+          ports:
+          - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: micronaut-env
+spec:
+  type: LoadBalancer
+  selector:
+    app: micronaut-env
+  ports:
+  - name: micronaut-env
+    port: 8080 
